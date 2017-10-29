@@ -47,13 +47,23 @@
                         console.log($scope.search);
                         console.log($scope.search.keyword);
 
-                        if($scope.search.keyword === ""){
-                            //filter la recherche
-                            console.log("Enter a keyword please");
-                        }
 
                         if($scope.search.sortedBy){
-                            //choose sur quoi le keyword se refere faire les calls API et store les data dans data
+
+                            if($scope.search.sortedBy === "articles"){
+
+                                //get all articles
+
+                                if($scope.search.keyword === ""){
+                                    //get articles by keyword (refer to name)
+                                    console.log("Enter a keyword please");
+                                }
+
+                            }
+
+                            if($scope.sortedBy === "products"){
+
+                            }
                         }
 
 

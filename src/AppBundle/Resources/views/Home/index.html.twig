@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+{% block title %}Home{% endblock %}
+
+    {% block stylesheets %}{% endblock %}
+
+{% block body %}
+    Lol
+    [[ 4*4 ]]
+
+    <div ng-controller="SearchController">
+        <input type="text" ng-model="search.keyword">
+        <label for="singleSelect"> Single select: </label><br>
+        <select name="select" ng-model="search.sortedBy">
+            <option value="articles">Articles</option>
+            <option value="products">Products</option>
+        </select><br>
+        <pre>user = [[user | json]]</pre>
+        <input type="submit" ng-click="searchByKeyword()" value="search">
+        <pre>
+           [[ search | json ]]
+        </pre>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script>
+
+        //avoid conflict twig with angularJS syntax
+        angular.module('app', [])
+                .config(['$interpolateProvider', function ($interpolateProvider) {
+                    $interpolateProvider.startSymbol('[[');
+                    $interpolateProvider.endSymbol(']]');
+                }])
+
+
+                .controller('SearchController', ['$scope', '$http', function ($scope, $http) {
+                    $scope.search = {
+                        keyword: "",
+                        sortedBy: "",
+                    };
+
+                    $scope.data = {
+                        articles: [],
+                        products: [],
+                    };
+
+                    $scope.searchByKeyword = function() {
+                        console.log($scope.search);
+                        console.log($scope.search.keyword);
+
+                        if($scope.search.keyword === ""){
+                            //filter la recherche
+                            console.log("Enter a keyword please");
+                        }
+
+                        if($scope.search.sortedBy){
+                            //choose sur quoi le keyword se refere faire les calls API et store les data dans data
+                        }
+
+
+                    };
+
+                }]);
+
+    </script>
+{% endblock %}

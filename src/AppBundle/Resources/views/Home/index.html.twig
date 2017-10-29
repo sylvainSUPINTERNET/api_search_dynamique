@@ -8,13 +8,18 @@
     [[ 4*4 ]]
 
     <div ng-controller="SearchController">
-        <input type="text" ng-model="search.keyword">
+        <label for="name">Name : </label>
+        <input id="name" type="text" ng-model="search.keyword" ng-disabled="search.id">
         <label for="singleSelect"> Single select: </label><br>
-        <select name="select" ng-model="search.sortedBy">
+        <label for="type">Type : </label>
+        <select id="type" name="select" ng-model="search.sortedBy">
             <option value="articles">Articles</option>
             <option value="products">Products</option>
         </select><br>
-        <pre>user = [[user | json]]</pre>
+        <label for="id">id : </label>
+        <input id="id" type="number" ng-disabled="search.keyword" placeholder="id article " ng-model="search.id">
+
+        <pre>[[user | json]]</pre>
         <input type="submit" ng-click="searchByKeyword()" value="search">
         <pre>
            [[ search | json ]]
@@ -43,6 +48,8 @@
                         products: [],
                     };
 
+
+
                     $scope.searchByKeyword = function() {
                         console.log($scope.search);
                         console.log($scope.search.keyword);
@@ -50,6 +57,8 @@
 
                         if($scope.search.sortedBy){
 
+
+                            /* Articles */
                             if($scope.search.sortedBy === "articles"){
 
                                 //get all articles
@@ -59,8 +68,19 @@
                                     console.log("Enter a keyword please");
                                 }
 
+                                if($scope.search.id !== ""){
+                                    console.log("wait");
+                                    $http.get(`http://localhost:8000/article/${$scope.search.id}`)
+                                            .then(function(response) {
+                                                console.log(response);
+                                                $scope.data.articles = response.data;
+                                            });
+                                }
+
                             }
 
+
+                            /* Products */
                             if($scope.sortedBy === "products"){
 
                             }

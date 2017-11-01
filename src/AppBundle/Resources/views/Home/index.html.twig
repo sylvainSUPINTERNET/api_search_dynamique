@@ -1,32 +1,90 @@
 {% extends 'base.html.twig' %}
 {% block title %}Home{% endblock %}
 
-    {% block stylesheets %}{% endblock %}
+    {% block stylesheets %}
+    {% endblock %}
 
 {% block body %}
-    <div ng-controller="SearchController">
-        <label for="type">Type : </label>
-        <select id="type" name="select" ng-model="search.sortedBy" ng-change="changeType()">
-            <option value="articles" selected="selected">Articles</option>
-            <option value="products">Products</option>
-        </select>
+    <style>
+        /* dirty */
+        .center_div {
+            margin: 0 auto;
+            width: 80%
+        }
 
-        <label for="name">Name : </label>
-        <input id="name" type="text" ng-model="search.keyword" ng-disabled="search.id || !search.sortedBy"
-               ng-change="changeType()">
-        <br>
-        <label for="id">id : </label>
-        <input id="id" type="number" ng-disabled="search.keyword || !search.sortedBy" placeholder="id article "
-               ng-model="search.id" ng-change="changeType()">
+        .marginInput {
+            margin-left: 15px;
+        }
 
-        <pre>[[user | json]]</pre>
+    </style>
+    <div class="container center_div">
+        <div ng-controller="SearchController">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <select class="mdl-textfield__input" id="type" name="type" ng-model="search.sortedBy"
+                        ng-change="changeType()">
+                    <option></option>
+                    <option value="articles">Articles</option>
+                    <option value="products">Products</option>
+                </select>
+                <label class="mdl-textfield__label" for="type">Vous cherchez ?</label>
+            </div>
+            <br>
+            <div class="mdl-textfield mdl-js-textfield" ng-hide="UI()">
+                <input class="mdl-textfield__input" type="text" id="sample1" ng-model="search.keyword"
+                       ng-disabled="search.id || !search.sortedBy" ng-change="changeType()">
+                <label class="mdl-textfield__label" for="sample1">Mot clé ...</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield marginInput" ng-hide="UI()">
+                <input class="mdl-textfield__input " type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2"
+                       ng-disabled="search.keyword || !search.sortedBy" ng-model="search.id" ng-change="changeType()">
+                <label class="mdl-textfield__label" for="sample2">Chercher par id ...</label>
+                <span class="mdl-textfield__error">Vous devez entrer un nombre</span>
+            </div>
+
+            <br>
+            <!--
         <pre>
            [[ search | json ]]
         </pre>
+        -->
 
+            <p ng-hide="result()">Résultats trouvés pour : [[search.keyword]] [[search.id]] </p>
+
+
+            <!--
         <pre>
-            [[ data.articles | json]]
+            [[ data.articles.length | json]]
         </pre>
+        -->
+
+
+            <div ng-hide="!data.articles">
+                <div class="demo-card-wide mdl-card mdl-shadow--2dp" ng-repeat="article in data.articles">
+
+                    <div class="mdl-card__title">
+                        <h2 class="mdl-card__title-text">[[article.name]]</h2>
+                    </div>
+                    <div class="mdl-card__supporting-text">
+                        [[article.description]]
+                    </div>
+                    <div class="mdl-card__actions mdl-card--border">
+                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                            Read more
+                        </a>
+                    </div>
+                    <div class="mdl-card__menu">
+                        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                            <i class="material-icons">share</i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <p>[[data.articles.error]]</p>
+
+
+
+        </div>
     </div>
 {% endblock %}
 {% block javascripts %}
@@ -48,10 +106,6 @@
                         products: [],
                     };
 
-
-                    //to do
-                    // => new route API mixed id + name
-                    // => else if ($scope.search.keyword && $scope.search.id){ ... clal vers notre nouvelle route}
 
                     $scope.changeType = function () {
                         /* Articles */
@@ -112,6 +166,25 @@
                         }
 
                     };
+
+
+                    $scope.UI = function () {
+                        var display = false;
+                        if ($scope.search.sortedBy) {
+                            return display
+                        } else {
+                            return !display
+                        }
+                    }
+
+                    $scope.result = function () {
+                        if ($scope.search.keyword || $scope.search.id) {
+                            return false;
+                        } else {
+                            return true
+                        }
+                    }
+
 
 
                 }]);

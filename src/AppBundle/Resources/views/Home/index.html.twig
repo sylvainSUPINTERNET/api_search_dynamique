@@ -58,7 +58,6 @@
                         if ($scope.search.sortedBy) {
                             if ($scope.search.sortedBy === "articles") {
 
-
                                 if ($scope.search.id) {
                                     //sorted articles by id
                                     console.log("sorted by id");
@@ -86,6 +85,28 @@
                             }
                             else if ($scope.search.sortedBy === "products") {
                                 //get all products
+                                if ($scope.search.id) {
+                                    //sorted articles by id
+                                    console.log("sorted by id");
+                                    $http.get(`http://localhost:8000/product/${$scope.search.id}`)
+                                            .then(function (response) {
+                                                $scope.data.articles = response.data;
+                                            });
+                                } else if ($scope.search.keyword) {
+                                    //sorted articles by keyword (name_article)
+                                    console.log("sorted by keyword");
+                                    $http.get(`http://localhost:8000/product/name/${$scope.search.keyword}`)
+                                            .then(function (response) {
+                                                console.log(response.data);
+                                                $scope.data.articles = response.data;
+                                            });
+                                } else {
+                                    //display all articles when type articles is selected default
+                                    $http.get(`http://localhost:8000/products`)
+                                            .then(function (response) {
+                                                $scope.data.articles = response.data;
+                                            });
+                                }
 
                             }
                         }

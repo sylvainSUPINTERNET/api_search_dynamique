@@ -5,13 +5,12 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Article
+ * Product
  *
- * @ORM\Table(name="article")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\ArticleRepository")
- * @ORM\HasLifecycleCallbacks()
+ * @ORM\Table(name="product")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ProductRepository")
  */
-class Article
+class Product
 {
     /**
      * @var int
@@ -59,7 +58,7 @@ class Article
      *
      * @param string $name
      *
-     * @return Article
+     * @return Product
      */
     public function setName($name)
     {
@@ -83,7 +82,7 @@ class Article
      *
      * @param string $description
      *
-     * @return Article
+     * @return Product
      */
     public function setDescription($description)
     {
@@ -104,12 +103,14 @@ class Article
 
     /**
      * Set updateAt
-     * @return Article
-     * @ORM\PrePersist
+     *
+     * @param \DateTime $updateAt
+     *
+     * @return Product
      */
-    public function setUpdateAt()
+    public function setUpdateAt($updateAt)
     {
-        $this->updateAt = new \DateTime();
+        $this->updateAt = $updateAt;
 
         return $this;
     }
@@ -124,3 +125,4 @@ class Article
         return $this->updateAt;
     }
 }
+

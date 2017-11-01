@@ -74,6 +74,40 @@ class ApiManager
     }
 
 
+    public function getArticleByName($article_name){
+
+        //query builder LIKE on name
+        $qb = $this->em->createQueryBuilder();
+        $articles = $qb->select('n')->from('AppBundle\Entity\Article', 'n')
+            ->where( $qb->expr()->like('n.name', $qb->expr()->literal('%' . $article_name . '%')) )
+            ->getQuery()
+            ->getResult();
+
+        $formatted = [];
+
+        if ($articles) {
+
+            foreach ($articles as $article) {
+
+                $formatted[] = [
+                    "name" => $article->getName(),
+                    "description" => $article->getDescription(),
+                    "updateAt" => $article->getUpdateAt(),
+                ];
+            }
+        } else {
+            $response = new Response();
+            $formatted = [
+                "error" => "articles not found",
+                "code" => $response::HTTP_NO_CONTENT
+            ];
+        }
+
+        return new JsonResponse($formatted);
+
+    }
+
+
     /* test for $request->request->get('post') into Service
     public function checkApi(){
         $request = $this->requestStack->getCurrentRequest();

@@ -39,6 +39,16 @@ class ArticleController extends Controller
 
     }
 
+    /**
+     * @Get("/article/name/{article_name}")
+     */
+    public function getArticleByName(Request $request, $article_name, ApiManager $apiManager /* service */)
+    {
+        $articles_json = $apiManager->getArticleByName($article_name);
+        return $articles_json;
+
+    }
+
     /*
 
     /**

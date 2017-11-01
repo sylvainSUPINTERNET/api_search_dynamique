@@ -4,29 +4,27 @@
     {% block stylesheets %}{% endblock %}
 
 {% block body %}
-    Lol
-    [[ 4*4 ]]
-
     <div ng-controller="SearchController">
-        <label for="name">Name : </label>
-        <input id="name" type="text" ng-model="search.keyword" ng-disabled="search.id">
-        <label for="singleSelect"> Single select: </label><br>
         <label for="type">Type : </label>
-        <select id="type" name="select" ng-model="search.sortedBy">
-            <option value="articles">Articles</option>
+        <select id="type" name="select" ng-model="search.sortedBy" ng-change="changeType()">
+            <option value="articles" selected="selected">Articles</option>
             <option value="products">Products</option>
-        </select><br>
+        </select>
+
+        <label for="name">Name : </label>
+        <input id="name" type="text" ng-model="search.keyword" ng-disabled="search.id || !search.sortedBy"
+               ng-change="changeType()">
+        <br>
         <label for="id">id : </label>
-        <input id="id" type="number" ng-disabled="search.keyword" placeholder="id article " ng-model="search.id">
+        <input id="id" type="number" ng-disabled="search.keyword || !search.sortedBy" placeholder="id article "
+               ng-model="search.id" ng-change="changeType()">
 
         <pre>[[user | json]]</pre>
-        <input type="submit" ng-click="searchByKeyword()" value="search">
         <pre>
            [[ search | json ]]
         </pre>
 
         <pre>
-            HERE DISPLAY DATA - dont forget to select Article lol
             [[ data.articles | json]]
         </pre>
     </div>
@@ -43,10 +41,7 @@
 
 
                 .controller('SearchController', ['$scope', '$http', function ($scope, $http) {
-                    $scope.search = {
-                        keyword: "",
-                        sortedBy: "",
-                    };
+                    $scope.search = {};
 
                     $scope.data = {
                         articles: [],
@@ -54,45 +49,45 @@
                     };
 
 
-
-                    $scope.searchByKeyword = function() {
-                        console.log($scope.search);
-                        console.log($scope.search.keyword);
-
-
-                        if($scope.search.sortedBy){
+                    $scope.changeType = function () {
+                        /* Articles */
+                        if ($scope.search.sortedBy) {
+                            if ($scope.search.sortedBy === "articles") {
 
 
-                            /* Articles */
-                            if($scope.search.sortedBy === "articles"){
-
-                                //get all articles
-
-                                if($scope.search.keyword === ""){
-                                    //get articles by keyword (refer to name)
-                                    console.log("Enter a keyword please");
-                                }
-
-                                if($scope.search.id !== ""){
-                                    console.log("wait");
+                                if ($scope.search.id) {
+                                    //sorted articles by id
+                                    console.log("sorted by id");
                                     $http.get(`http://localhost:8000/article/${$scope.search.id}`)
-                                            .then(function(response) {
-                                                console.log(response);
+                                            .then(function (response) {
+                                                $scope.data.articles = response.data;
+                                            });
+                                } else if ($scope.search.keyword) {
+                                    //sorted articles by keyword (name_article)
+                                    console.log("sorted by keyword");
+                                    $http.get(`http://localhost:8000/article/name/${$scope.search.keyword}`)
+                                            .then(function (response) {
+                                                console.log(response.data);
+                                                $scope.data.articles = response.data;
+                                            });
+                                } else {
+                                    //display all articles when type articles is selected default
+                                    $http.get(`http://localhost:8000/articles`)
+                                            .then(function (response) {
                                                 $scope.data.articles = response.data;
                                             });
                                 }
 
+
                             }
-
-
-                            /* Products */
-                            if($scope.sortedBy === "products"){
+                            else if ($scope.search.sortedBy === "products") {
+                                //get all products
 
                             }
                         }
 
-
                     };
+
 
                 }]);
 

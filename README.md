@@ -12,6 +12,10 @@ composer install
 php bin/console doctrine:database:create 
 
 $ mysql -u root -p -h localhost your_DB_name < api_test.sql
+
+$ php bin/console server:run
+
+> http://localhost:8000
 ```
 
 

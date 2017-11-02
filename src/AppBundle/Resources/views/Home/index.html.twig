@@ -16,7 +16,15 @@
             margin-left: 15px;
         }
 
+        .disableButton{
+            opacity: 0.35;
+            background: #eee;
+            color: #444;
+        }
+
+
     </style>
+
     <div class="container center_div">
         <div ng-controller="SearchController">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -30,13 +38,14 @@
             <br>
             <div class="mdl-textfield mdl-js-textfield" ng-hide="UI()">
                 <input class="mdl-textfield__input" type="text" id="sample1" ng-model="search.keyword"
-                       ng-disabled="search.id || !search.sortedBy" ng-change="changeType()">
-                <label class="mdl-textfield__label" for="sample1">Mot clé ...</label>
+                       ng-disabled="search.id || !search.sortedBy" ng-change="changeType()"> 
+                <label class="mdl-textfield__label" for="sample1"  ng-class="{'disableButton': search.idx}">Mot clé ...</label>
+
             </div>
             <div class="mdl-textfield mdl-js-textfield marginInput" ng-hide="UI()">
                 <input class="mdl-textfield__input " type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2"
-                       ng-disabled="search.keyword || !search.sortedBy" ng-model="search.id" ng-change="changeType()">
-                <label class="mdl-textfield__label" for="sample2">Chercher par id ...</label>
+                       ng-disabled="search.keyword || !search.sortedBy" ng-model="search.id" ng-change="changeType()" >
+                <label class="mdl-textfield__label" for="sample2"  ng-class="{'disableButton': search.keyword}">Chercher par id ...</label>
                 <span class="mdl-textfield__error">Vous devez entrer un nombre</span>
             </div>
 
@@ -56,30 +65,58 @@
         </pre>
         -->
 
+            <div ng-if="search.id">
+                <div ng-show="!data.items.error">
+                    <div class="demo-card-wide mdl-card mdl-shadow--2dp">
 
-            <div ng-hide="!data.articles">
-                <div class="demo-card-wide mdl-card mdl-shadow--2dp" ng-repeat="article in data.articles">
-
-                    <div class="mdl-card__title">
-                        <h2 class="mdl-card__title-text">[[article.name]]</h2>
-                    </div>
-                    <div class="mdl-card__supporting-text">
-                        [[article.description]]
-                    </div>
-                    <div class="mdl-card__actions mdl-card--border">
-                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-                            Read more
-                        </a>
-                    </div>
-                    <div class="mdl-card__menu">
-                        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                            <i class="material-icons">share</i>
-                        </button>
+                        <div class="mdl-card__title">
+                            <h2 class="mdl-card__title-text">[[ data.items.name]]</h2>
+                        </div>
+                        <div class="mdl-card__supporting-text">
+                            [[data.items.description]]
+                        </div>
+                        <div class="mdl-card__actions mdl-card--border">
+                            <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                                Read more
+                            </a>
+                        </div>
+                        <div class="mdl-card__menu">
+                            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                <i class="material-icons">share</i>
+                            </button>
+                        </div>
                     </div>
                 </div>
+
             </div>
 
-            <p>[[data.articles.error]]</p>
+            <div ng-if="!search.id">
+                <div ng-show="!data.items.error">
+                    <p>[[ data.items.name]]</p>
+                    <div class="demo-card-wide mdl-card mdl-shadow--2dp" ng-repeat="item in data.items">
+
+                        <div class="mdl-card__title">
+                            <h2 class="mdl-card__title-text">[[item.name]]</h2>
+                        </div>
+                        <div class="mdl-card__supporting-text">
+                            [[item.description]]
+                        </div>
+                        <div class="mdl-card__actions mdl-card--border">
+                            <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                                Read more
+                            </a>
+                        </div>
+                        <div class="mdl-card__menu">
+                            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                <i class="material-icons">share</i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <p>[[data.items.error]]</p>
 
 
 
@@ -101,8 +138,7 @@
                     $scope.search = {};
 
                     $scope.data = {
-                        articles: [],
-                        products: [],
+                        items: [],
                     };
 
 
@@ -116,7 +152,7 @@
                                     console.log("sorted by id");
                                     $http.get(`http://localhost:8000/article/${$scope.search.id}`)
                                             .then(function (response) {
-                                                $scope.data.articles = response.data;
+                                                $scope.data.items = response.data;
                                             });
                                 } else if ($scope.search.keyword) {
                                     //sorted articles by keyword (name_article)
@@ -124,13 +160,13 @@
                                     $http.get(`http://localhost:8000/article/name/${$scope.search.keyword}`)
                                             .then(function (response) {
                                                 console.log(response.data);
-                                                $scope.data.articles = response.data;
+                                                $scope.data.items = response.data;
                                             });
                                 } else {
                                     //display all articles when type articles is selected default
                                     $http.get(`http://localhost:8000/articles`)
                                             .then(function (response) {
-                                                $scope.data.articles = response.data;
+                                                $scope.data.items = response.data;
                                             });
                                 }
 
@@ -143,7 +179,7 @@
                                     console.log("sorted by id");
                                     $http.get(`http://localhost:8000/product/${$scope.search.id}`)
                                             .then(function (response) {
-                                                $scope.data.articles = response.data;
+                                                $scope.data.items = response.data;
                                             });
                                 } else if ($scope.search.keyword) {
                                     //sorted articles by keyword (name_article)
@@ -151,13 +187,13 @@
                                     $http.get(`http://localhost:8000/product/name/${$scope.search.keyword}`)
                                             .then(function (response) {
                                                 console.log(response.data);
-                                                $scope.data.articles = response.data;
+                                                $scope.data.items = response.data;
                                             });
                                 } else {
                                     //display all articles when type articles is selected default
                                     $http.get(`http://localhost:8000/products`)
                                             .then(function (response) {
-                                                $scope.data.articles = response.data;
+                                                $scope.data.items = response.data;
                                             });
                                 }
 

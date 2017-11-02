@@ -3,6 +3,6 @@ Mini API (Symfony 3 & AngularJS)
 
 Get started
 --------------
-```{r, engine='bash', count_lines}
+```{r, engine='sh', count_lines}
 wc -l en_US.twitter.txt 
 ```

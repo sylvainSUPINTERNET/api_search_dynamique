@@ -38,7 +38,7 @@
             <br>
             <div class="mdl-textfield mdl-js-textfield" ng-hide="UI()">
                 <input class="mdl-textfield__input" type="text" id="sample1" ng-model="search.keyword"
-                       ng-disabled="search.id || !search.sortedBy" ng-change="changeType()"> 
+                       ng-disabled="search.id || !search.sortedBy" ng-change="changeType()">
                 <label class="mdl-textfield__label" for="sample1"  ng-class="{'disableButton': search.idx}">Mot clé ...</label>
 
             </div>
@@ -149,14 +149,14 @@
 
                                 if ($scope.search.id) {
                                     //sorted articles by id
-                                    console.log("sorted by id");
+                                    //console.log("sorted by id");
                                     $http.get(`http://localhost:8000/article/${$scope.search.id}`)
                                             .then(function (response) {
                                                 $scope.data.items = response.data;
                                             });
                                 } else if ($scope.search.keyword) {
                                     //sorted articles by keyword (name_article)
-                                    console.log("sorted by keyword");
+                                    //console.log("sorted by keyword");
                                     $http.get(`http://localhost:8000/article/name/${$scope.search.keyword}`)
                                             .then(function (response) {
                                                 console.log(response.data);
@@ -176,17 +176,17 @@
                                 //get all products
                                 if ($scope.search.id) {
                                     //sorted articles by id
-                                    console.log("sorted by id");
+                                   // console.log("sorted by id");
                                     $http.get(`http://localhost:8000/product/${$scope.search.id}`)
                                             .then(function (response) {
                                                 $scope.data.items = response.data;
                                             });
                                 } else if ($scope.search.keyword) {
                                     //sorted articles by keyword (name_article)
-                                    console.log("sorted by keyword");
+                                   // console.log("sorted by keyword");
                                     $http.get(`http://localhost:8000/product/name/${$scope.search.keyword}`)
                                             .then(function (response) {
-                                                console.log(response.data);
+                                                //console.log(response.data);
                                                 $scope.data.items = response.data;
                                             });
                                 } else {
